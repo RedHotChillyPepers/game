@@ -1,6 +1,8 @@
 import Phaser from "phaser";
 import { DungeonGenerator, DungeonArgs } from "../utils/DungionGenerator";
 import DungeonDrawer from "../utils/DungeonDrawer";
+import { CommonRoomTypes, RoomTemplate, RoomTypes } from "../utils/types";
+import { random, randomChoice } from "../utils/utils";
 
 export default class GameScreen extends Phaser.Scene {
     constructor() {
@@ -15,6 +17,11 @@ export default class GameScreen extends Phaser.Scene {
         //   "assets/images/kenney_player_atlas.json"
         // );
         this.load.spritesheet("spritesheet", "assets/images/spritesheet.png", {
+            frameWidth: 16,
+            frameHeight: 16,
+        });
+
+        this.load.spritesheet("spritesheet_walls", "assets/images/spritesheet_walls.png", {
             frameWidth: 16,
             frameHeight: 16,
         });
@@ -47,14 +54,16 @@ export default class GameScreen extends Phaser.Scene {
         const config = {
             levels: [
                 new DungeonArgs(
-                    64,
-                    48,
+                    100,
+                    50,
                     1,
                     4,
                     30,
                     0.45,
-                    4,
-                    2
+                    12,
+                    2,
+                    null,
+                    this.generateRoomsByLevel()
                 ),
             ],
         };
@@ -67,5 +76,26 @@ export default class GameScreen extends Phaser.Scene {
         console.log(dungeon);
         const dungeonDrawer = new DungeonDrawer(this, dungeon, dungeonArgs, spritesheet);
         dungeonDrawer.draw();
+    }
+
+    generateRoomsByLevel(level) {
+        const rooms = [];
+        for (const key in CommonRoomTypes) {
+            rooms.push(new RoomTemplate(
+                CommonRoomTypes[key],
+                9,
+                9
+            ))
+        }
+
+        for (const key in RoomTypes) {
+            rooms.push(new RoomTemplate(
+                RoomTypes[key],
+                12,
+                12
+            ))
+        }
+
+        return rooms;
     }
 }

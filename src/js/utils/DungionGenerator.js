@@ -1,5 +1,5 @@
 import { random, randomChoice } from "./utils";
-import { TreeNode, Container, Room, Corridor, RoomTemplate } from "./types";
+import { TreeNode, Container, Room, Corridor, RoomTemplate, CommonRoomTypes, RoomTypes } from "./types";
 import seedrandom from "seedrandom";
 
 export class DungeonGenerator {
@@ -185,11 +185,14 @@ export class DungeonGenerator {
     }
 
     generateRooms(tree, args) {
-        this.fillByType(tree, args, "boss", -1);
-        // fillByType(tree, args, "entrance", 1);
-        // fillByType(tree, args, "heal", 1);
-        // fillByType(tree, args, "treasure", 1);
-        // fillByType(tree, args, "monsters", -1);
+        for (const key in CommonRoomTypes) {
+            this.fillByType(tree, args, CommonRoomTypes[key], 1);
+        }
+
+        this.fillByType(tree, args, RoomTypes.boss, 1);
+        this.fillByType(tree, args, RoomTypes.rest, 1);
+        this.fillByType(tree, args, RoomTypes.empty, 2);
+        this.fillByType(tree, args, RoomTypes.enemies, -1);
     }
 
     fillByType(
@@ -200,7 +203,6 @@ export class DungeonGenerator {
     ) {
         // Filter available templates by type
         const templates = this.getTemplatesByType(args.rooms, type);
-        console.log(templates);
         if (templates.length === 0) {
             throw new Error(`Couldn't find templates of type "${type}"`);
         }
@@ -301,7 +303,6 @@ export class DungeonGenerator {
         type
     ) {
         return templates.filter((room) => {
-            console.log(templates, type, room.type, room.type === type);
             return room.type === type;
         });
     }
@@ -372,7 +373,7 @@ export class DungeonGenerator {
 }
 
 export class DungeonArgs {
-    constructor(mapWidth, mapHeight, mapGutterWidth, iterations, containerSplitRetries, containerMinimumRatio, containerMinimumSize, corridorWidth, seed = null) {
+    constructor(mapWidth, mapHeight, mapGutterWidth, iterations, containerSplitRetries, containerMinimumRatio, containerMinimumSize, corridorWidth, seed = null, rooms) {
             this.mapWidth = mapWidth;
             this.mapHeight = mapHeight;
             this.mapGutterWidth = mapGutterWidth;
@@ -382,13 +383,7 @@ export class DungeonArgs {
             this.containerMinimumSize = containerMinimumSize;
             this.corridorWidth = corridorWidth;
             this.seed = seed;
-            this.rooms = [
-                new RoomTemplate(
-                    'boss',
-                    5,
-                    5
-                )
-            ];
+            this.rooms = rooms;
         }
         /** A list of rooms to be used in the dungeon */
     rooms = [];

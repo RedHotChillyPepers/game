@@ -109,3 +109,15 @@ export class TreeNode {
         this.height = height;
     }
   }
+
+  export const CommonRoomTypes = {
+    start: 0,
+    finish: 2
+  }
+
+  export const RoomTypes = {
+    empty: 4,
+    rest: 8,
+    enemies: 16,
+    boss: 32
+  }

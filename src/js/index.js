@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import GameScreen from './scenes/GameScreen';
+import GameScreen2 from './scenes/GameScreen2';
 
 window.onload = function() {
     const gameConfig = {
@@ -17,7 +17,7 @@ window.onload = function() {
                 gravity: { y: 0 }
             }
         },
-        scene: GameScreen
+        scene: GameScreen2
     }
 
     const game = new Phaser.Game(gameConfig);
